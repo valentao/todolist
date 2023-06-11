@@ -16,5 +16,10 @@ namespace Todolist.Data
         public DbSet<TaskPriority> TaskPriority { get; set; }
 
         public DbSet<User> Users { get; set; }
+
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    optionsBuilder.UseSqlServer(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Todolist;Trusted_Connection=True;");
+        //}
     }
 }
