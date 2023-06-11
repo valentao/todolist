@@ -1,7 +1,12 @@
+using Microsoft.EntityFrameworkCore;
+using Todolist.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+builder.Services.AddDbContext<TodolistContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Todolist")));
 
 var app = builder.Build();
 
