@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 namespace Todolist.Areas.Identity.Data;
 
 // Add profile data for application users by adding properties to the ApplicationUser class
+[Table("AspNetUsers")]
 public class ApplicationUser : IdentityUser
 {
     [PersonalData]

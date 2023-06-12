@@ -1,0 +1,56 @@
+﻿@page
+@model Todolist.Pages.Tasks.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1>Edit</h1>
+
+<h4>Task</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Task.Id" />
+            <div class="form-group">
+                <label asp-for="Task.Name" class="control-label"></label>
+                <input asp-for="Task.Name" class="form-control" />
+                <span asp-validation-for="Task.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Task.DateCreate" class="control-label"></label>
+                <input asp-for="Task.DateCreate" class="form-control" />
+                <span asp-validation-for="Task.DateCreate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Task.DateDone" class="control-label"></label>
+                <input asp-for="Task.DateDone" class="form-control" />
+                <span asp-validation-for="Task.DateDone" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Task.DateDeadline" class="control-label"></label>
+                <input asp-for="Task.DateDeadline" class="form-control" />
+                <span asp-validation-for="Task.DateDeadline" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Task.IsDone" /> @Html.DisplayNameFor(model => model.Task.IsDone)
+                </label>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

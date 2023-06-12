@@ -15,8 +15,6 @@ namespace Todolist.Data
 
         public DbSet<TaskPriority> TaskPriority { get; set; }
 
-        public DbSet<User> Users { get; set; }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<TaskPriority>().HasData(

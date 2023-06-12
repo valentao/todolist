@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Todolist.Data;
 
@@ -11,9 +12,11 @@ using Todolist.Data;
 namespace Todolist.Migrations
 {
     [DbContext(typeof(TodolistContext))]
-    partial class TodolistContextModelSnapshot : ModelSnapshot
+    [Migration("20230612112517_AlterUser")]
+    partial class AlterUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
