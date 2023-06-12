@@ -1,12 +1,27 @@
 using Microsoft.EntityFrameworkCore;
 using Todolist.Data;
+using Microsoft.AspNetCore.Identity;
+using Todolist.Areas.Identity.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddRazorPages();
+
+builder.Services.AddRazorPages(options =>
+    options.Conventions.AuthorizePage("/Index") // require authorization
+);
 builder.Services.AddDbContext<TodolistContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Todolist")));
+
+builder.Services.AddDbContext<AuthDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Todolist")));
+
+builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false).AddEntityFrameworkStores<AuthDbContext>();
+
+// registration options configurations
+builder.Services.Configure<IdentityOptions>(options =>
+    options.Password.RequireUppercase = false
+);
 
 var app = builder.Build();
 
