@@ -6,9 +6,9 @@
 
         public string Name { get; set; } = null!;
 
-        public int UserId { get; set; }
+        public User User { get; set; } = null!;
 
-        public int TaskPriorityId { get; set; }
+        public TaskPriority TaskPriority { get; set; } = null!;
 
         public DateTime DateCreate { get; set; }
 
@@ -18,6 +18,6 @@
 
         public bool IsDone { get; set; }
 
-        public int? TaskId { get; set; }
+        public Task? TaskParent { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Todolist.Data;
 
@@ -11,9 +12,11 @@ using Todolist.Data;
 namespace Todolist.Migrations
 {
     [DbContext(typeof(TodolistContext))]
-    partial class TodolistContextModelSnapshot : ModelSnapshot
+    [Migration("20230612061320_ForeignKeys")]
+    partial class ForeignKeys
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -88,29 +91,6 @@ namespace Todolist.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("TaskPriority");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Color = "#ff0000",
-                            Description = "Highest level of priority",
-                            Name = "High"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Color = "#ffa500",
-                            Description = "Medium level of priority",
-                            Name = "Medium"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Color = "#008000",
-                            Description = "Lowest level of priority",
-                            Name = "Low"
-                        });
                 });
 
             modelBuilder.Entity("Todolist.Models.User", b =>
@@ -130,10 +110,6 @@ namespace Todolist.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
