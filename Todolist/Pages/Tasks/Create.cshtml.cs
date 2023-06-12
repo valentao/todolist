@@ -88,7 +88,9 @@ namespace Todolist.Pages.Tasks
         public async Task<IActionResult> OnPostAsync()
         {
             Task.DateCreate = DateTime.Now;
-            Task.User = await _userManager.GetUserAsync(this.User);
+
+            Task.UserId = _userManager.GetUserId(this.User);
+
             var y = _context.TaskPriority.Where(x => x.Id == 1);
 
             if (!ModelState.IsValid || _context.Tasks == null || Task == null)

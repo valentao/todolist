@@ -9,7 +9,11 @@ namespace Todolist.Models
 
         public string Name { get; set; } = null!;
 
+        public string UserId { get; set; }
+
         public ApplicationUser User { get; set; } = null!;
+
+        public int TaskPriorityId { get; set; }
 
         public TaskPriority TaskPriority { get; set; } = null!;
 
@@ -20,6 +24,8 @@ namespace Todolist.Models
         public DateTime? DateDeadline { get; set; }
 
         public bool IsDone { get; set; }
+
+        public int? TaskParentId { get; set; }
 
         public Task? TaskParent { get; set; }
     }
