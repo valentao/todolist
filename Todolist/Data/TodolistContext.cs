@@ -1,5 +1,6 @@
 ﻿using Todolist.Models;
 using Microsoft.EntityFrameworkCore;
+using Todolist.Areas.Identity.Data;
 
 namespace Todolist.Data
 {
@@ -14,6 +15,8 @@ namespace Todolist.Data
         public DbSet<Models.Task> Tasks { get; set; }
 
         public DbSet<TaskPriority> TaskPriority { get; set; }
+
+        public DbSet<ApplicationUser> User { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -18,7 +18,6 @@ namespace Todolist.Pages.Tasks
     public class CreateModel : PageModel
     {
         private readonly Todolist.Data.TodolistContext _context;
-        private readonly UserManager<ApplicationUser> _userManager;
 
         /// <summary>
         /// Select list for TaskPriority dropdown
@@ -30,15 +29,9 @@ namespace Todolist.Pages.Tasks
         /// </summary>
         public SelectList TaskSL { get; set; } = null!;
 
-        /// <summary>
-        /// String for saving login user id
-        /// </summary>
-        public string UserId { get; set; } = null!;
-
-        public CreateModel(Todolist.Data.TodolistContext context, UserManager<ApplicationUser> userManager)
+        public CreateModel(Todolist.Data.TodolistContext context)
         {
             _context = context;
-            _userManager = userManager;
         }
 
         /// <summary>
@@ -67,19 +60,16 @@ namespace Todolist.Pages.Tasks
                 selectedTask);
         }
 
-        public IActionResult OnGet()
-        {
-            TaskPriorityDropDownList(_context);
-            TaskDropDownList(_context);
-
-            UserId = _userManager.GetUserId(this.User) ?? String.Empty;
-
-            return Page();
-        }
-
         [BindProperty]
         //public Models.Task Task { get; set; } = default!;
         public Create TaskCreate { get; set; } = default!;
+
+        public IActionResult OnGet()
+        {
+            TaskPriorityDropDownList();
+            TaskDropDownList();
+            return Page();
+        }
 
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
@@ -94,8 +84,8 @@ namespace Todolist.Pages.Tasks
 
             if (!ModelState.IsValid || _context.Tasks == null || TaskCreate == null)
             {
-                TaskPriorityDropDownList(_context);
-                TaskDropDownList(_context);
+                TaskPriorityDropDownList();
+                TaskDropDownList();
                 return Page();
             }
 
@@ -106,8 +96,7 @@ namespace Todolist.Pages.Tasks
                 TaskPriorityId = TaskCreate.TaskPriorityId,
                 DateDeadline = TaskCreate.DateDeadline,
                 TaskParentId = TaskCreate.TaskParentId,
-                DateCreate = TaskCreate.DateCreate,
-                UserId = TaskCreate.UserId
+                DateCreate = TaskCreate.DateCreate
             };
 
             _context.Tasks.Add(task);

@@ -15,12 +15,6 @@
     <div class="col-md-4">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            
-            <div class="form-group" hidden="hidden" >
-                <label asp-for="TaskCreate.UserId" class="control-label"></label>
-                <input asp-for="TaskCreate.UserId" class="form-control" value="@Model.UserId" />
-                <span asp-validation-for="TaskCreate.UserId" class="text-danger"></span>
-            </div>
             <div class="form-group">
                 <label asp-for="TaskCreate.Name" class="control-label"></label>
                 <input asp-for="TaskCreate.Name" class="form-control" data-val-required="Name is required" />

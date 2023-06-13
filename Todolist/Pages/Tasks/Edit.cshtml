@@ -14,30 +14,44 @@
     <div class="col-md-4">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Task.Id" />
+            <input type="hidden" asp-for="TaskEdit.Id" />
             <div class="form-group">
-                <label asp-for="Task.Name" class="control-label"></label>
-                <input asp-for="Task.Name" class="form-control" />
-                <span asp-validation-for="Task.Name" class="text-danger"></span>
+                <label asp-for="TaskEdit.Name" class="control-label"></label>
+                <input asp-for="TaskEdit.Name" class="form-control" />
+                <span asp-validation-for="TaskEdit.Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Task.DateCreate" class="control-label"></label>
-                <input asp-for="Task.DateCreate" class="form-control" />
-                <span asp-validation-for="Task.DateCreate" class="text-danger"></span>
+                <label asp-for="TaskEdit.TaskPriorityId" class="control-label"></label>
+                <select asp-for="TaskEdit.TaskPriorityId" asp-items="Model.TaskPrioritySL" class="form-control" data-val-required="Task priority is required">
+                    <option value="">-- Select Priority --</option>
+                </select>
+                <span asp-validation-for="TaskEdit.TaskPriorityId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Task.DateDone" class="control-label"></label>
-                <input asp-for="Task.DateDone" class="form-control" />
-                <span asp-validation-for="Task.DateDone" class="text-danger"></span>
+                <label asp-for="TaskEdit.TaskParentId" class="control-label">Parent task</label>
+                <select asp-for="TaskEdit.TaskParentId" asp-items="Model.TaskSL" class="form-control">
+                    <option value="">-- No parent --</option>
+                </select>
+                <span asp-validation-for="TaskEdit.TaskParentId" class="text-danger"></span>
+            </div>
+            <div class="form-group" hidden="hidden">
+                <label asp-for="TaskEdit.DateCreate" class="control-label"></label>
+                <input asp-for="TaskEdit.DateCreate" class="form-control" readonly="true" />
+                <span asp-validation-for="TaskEdit.DateCreate" class="text-danger"></span>
+            </div>
+            <div class="form-group" hidden="hidden">
+                <label asp-for="TaskEdit.DateDone" class="control-label"></label>
+                <input asp-for="TaskEdit.DateDone" class="form-control" readonly="true" />
+                <span asp-validation-for="TaskEdit.DateDone" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Task.DateDeadline" class="control-label"></label>
-                <input asp-for="Task.DateDeadline" class="form-control" />
-                <span asp-validation-for="Task.DateDeadline" class="text-danger"></span>
+                <label asp-for="TaskEdit.DateDeadline" class="control-label"></label>
+                <input asp-for="TaskEdit.DateDeadline" class="form-control" />
+                <span asp-validation-for="TaskEdit.DateDeadline" class="text-danger"></span>
             </div>
-            <div class="form-group form-check">
+            <div class="form-group form-check" hidden="hidden">
                 <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Task.IsDone" /> @Html.DisplayNameFor(model => model.Task.IsDone)
+                    <input class="form-check-input" asp-for="TaskEdit.IsDone" readonly="true" /> @Html.DisplayNameFor(model => model.TaskEdit.IsDone)
                 </label>
             </div>
             <div class="form-group">

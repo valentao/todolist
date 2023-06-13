@@ -19,6 +19,12 @@
             @Html.DisplayFor(model => model.Task.Name)
         </dd>
         <dt class="col-sm-2">
+            @Html.DisplayName("Parent name")
+          </dt>
+        <dd class="col-sm-10">
+            <a asp-page="./Details" asp-route-id="@Model.Task?.TaskParent?.Id">@Model.Task?.TaskParent?.Name</a>
+        </dd>
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Task.DateCreate)
         </dt>
         <dd class="col-sm-10">

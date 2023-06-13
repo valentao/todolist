@@ -29,13 +29,20 @@ namespace Todolist.Pages.Tasks
             }
 
             var task = await _context.Tasks.FirstOrDefaultAsync(m => m.Id == id);
+            
             if (task == null)
             {
                 return NotFound();
             }
             else 
             {
+                var taskParent = await _context.Tasks.FirstOrDefaultAsync(p => p.Id == task.TaskParentId);
+                
                 Task = task;
+                if (taskParent != null)
+                {
+                    Task.TaskParent = taskParent;
+                }
             }
             return Page();
         }
