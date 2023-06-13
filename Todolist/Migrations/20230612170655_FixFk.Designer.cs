@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Todolist.Data;
 
@@ -11,9 +12,11 @@ using Todolist.Data;
 namespace Todolist.Migrations
 {
     [DbContext(typeof(TodolistContext))]
-    partial class TodolistContextModelSnapshot : ModelSnapshot
+    [Migration("20230612170655_FixFk")]
+    partial class FixFk
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -112,11 +115,17 @@ namespace Todolist.Migrations
                     b.Property<int>("TaskPriorityId")
                         .HasColumnType("int");
 
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("TaskParentId");
 
                     b.HasIndex("TaskPriorityId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Tasks");
                 });
@@ -180,9 +189,17 @@ namespace Todolist.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Todolist.Areas.Identity.Data.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("TaskParent");
 
                     b.Navigation("TaskPriority");
+
+                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }

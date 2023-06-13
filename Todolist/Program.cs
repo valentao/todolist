@@ -8,8 +8,12 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddRazorPages(options =>
-    options.Conventions.AuthorizePage("/Index") // require authorization
-);
+{
+    options.RootDirectory = "/Pages/Tasks";
+    options.Conventions.AuthorizeFolder("/Tasks/");
+    options.Conventions.AuthorizePage("/Index");
+});
+
 builder.Services.AddDbContext<TodolistContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Todolist")));
 

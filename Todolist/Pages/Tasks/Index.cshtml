@@ -1,0 +1,125 @@
+﻿@page
+@model Todolist.Pages.Tasks.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1>Tasks</h1>
+
+<div>
+    <div class="row">
+        <div class="col-md-4">
+            <form id="buttonsForm" method="post">
+                <div class="row">
+                    <div class="col-md-4">
+                        <button asp-page="Create" class="btn btn-primary">Create New</button>
+                    </div>
+                    <div class="col-md-4">
+
+                        <button id="clear" type="submit" asp-page-handler="Clear" class="btn btn-danger">Clear All</button>
+
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Task[0].Name) (@Html.DisplayName("Parent"))
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Task[0].DateCreate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Task[0].DateDone)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Task[0].DateDeadline)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Task[0].IsDone)
+            </th>
+            <th>
+                @Html.DisplayName("Priority")
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Task)
+        {
+            <tr>
+                @if (item.TaskParentId == null) {
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                }
+                else
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name) (@Html.DisplayFor(modelItem => item.TaskParent.Name))
+                    </td>
+                }
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateCreate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateDone)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateDeadline)
+                </td>
+                <td>
+                    @*@Html.DisplayFor(modelItem => item.IsDone)*@
+                    @*@Html.CheckBoxFor(modelItem => item.IsDone)*@
+
+                    <form method="post" asp-route-RecordId="@item.Id">
+                        @*<input type="checkbox" onclick="ckBox(this)" checked="@item.IsDone" value="true" asp-page-handler="Done" asp-route-Id="@item.Id">*@
+                        <input id="btnDone_@(item.Id)" type="submit" asp-page-handler="Done" asp-route-Id="@item.Id" hidden="hidden" />
+                        <input type="checkbox" id="chkbDone_@(item.Id)" onclick="ckBox(this)" checked="@item.IsDone"  />
+                    </form>
+                </td>
+                <td style="background-color: @item.TaskPriority.Color">
+                    @Html.DisplayFor(modelItem => item.TaskPriority.Name)
+                </td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts
+    {
+    <script type="text/javascript">
+        // find button with same Id/Row and call click
+        function ckBox(e) {
+            
+            //console.log(e.checked);
+            //console.log(btn);
+            //console.log($("#" + btn));
+
+            if (e.checked)
+            {
+                var btn = e.id.replace("chkb", "btn");
+                $("#" + btn).click();
+            }
+            else
+            {
+                e.checked = true;
+            }
+        }
+    </script>
+}

@@ -1,0 +1,72 @@
+﻿@page
+@using Todolist.Models.ViewModels;
+@model Todolist.Pages.Tasks.CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1>Create</h1>
+
+<h4>Task</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="TaskCreate.Name" class="control-label"></label>
+                <input asp-for="TaskCreate.Name" class="form-control" data-val-required="Name is required" />
+                <span asp-validation-for="TaskCreate.Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="TaskCreate.TaskPriorityId" class="control-label"></label>
+                <select asp-for="TaskCreate.TaskPriorityId" asp-items="Model.TaskPrioritySL" class="form-control" data-val-required="Task priority is required">
+                    <option value="">-- Select Priority --</option>
+                </select>
+                <span asp-validation-for="TaskCreate.TaskPriorityId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TaskCreate.TaskParentId" class="control-label">Parent task</label>
+                <select asp-for="TaskCreate.TaskParentId" asp-items="Model.TaskSL" class="form-control">
+                    <option value="">-- No parent --</option>
+                </select>
+                <span asp-validation-for="TaskCreate.TaskParentId" class="text-danger"></span>
+            </div>
+@*            <div class="form-group">
+                <label asp-for="Task.DateCreate" class="control-label"></label>
+                <input asp-for="Task.DateCreate" class="form-control" readonly="true" />
+                <span asp-validation-for="Task.DateCreate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Task.DateDone" class="control-label"></label>
+                <input asp-for="Task.DateDone" class="form-control" />
+                <span asp-validation-for="Task.DateDone" class="text-danger"></span>
+            </div>*@
+            <div class="form-group">
+                <label asp-for="TaskCreate.DateDeadline" class="control-label">Deadline</label>
+                <input asp-for="TaskCreate.DateDeadline" class="form-control" />
+                <span asp-validation-for="TaskCreate.DateDeadline" class="text-danger"></span>
+            </div>
+            @*<div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Task.IsDone" /> @Html.DisplayNameFor(model => model.Task.IsDone)
+                </label>
+            </div>*@
+            
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
