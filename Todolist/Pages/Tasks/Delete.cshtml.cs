@@ -20,7 +20,7 @@ namespace Todolist.Pages.Tasks
         }
 
         [BindProperty]
-      public Models.Task Task { get; set; } = default!;
+        public Models.Task Task { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -35,7 +35,7 @@ namespace Todolist.Pages.Tasks
             {
                 return NotFound();
             }
-            else 
+            else
             {
                 Task = task;
             }
@@ -49,6 +49,37 @@ namespace Todolist.Pages.Tasks
                 return NotFound();
             }
             var task = await _context.Tasks.FindAsync(id);
+
+            // edit subordinated tasks - remove link to parent - one by one
+            //var subordinateTasks = _context.Tasks.Where(t => t.TaskParentId == id);
+
+            //if (subordinateTasks.Count() > 0)
+            //{
+            //    foreach (Models.Task sTask in subordinateTasks)
+            //    {
+            //        sTask.TaskParentId = null;
+            //        _context.Tasks.Update(sTask);
+            //    }
+            //}
+
+            // edit subordinate tasks - remove link to parent - one Linq query
+            _context.Tasks.Where(t => t.TaskParentId == id).ToList().ForEach(x =>
+            {
+                x.TaskParentId = null;
+            });
+
+            // remove subordinated tasks
+            //if (subordinateTasks.Count() > 0)
+            //{
+            //    _context.Tasks.RemoveRange(subordinateTasks);
+            //}
+
+            // remove task and all his subordinate
+            //var removeTasks = _context.Tasks.Where(t => t.Id == id || t.TaskParentId == id);
+            //if (removeTasks.Count() > 0)
+            //{
+            //    _context.Tasks.RemoveRange(removeTasks);
+            //}
 
             if (task != null)
             {
