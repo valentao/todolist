@@ -79,7 +79,7 @@ namespace Todolist.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AspNetUsers");
+                    b.ToTable("AspNetUsers", (string)null);
                 });
 
             modelBuilder.Entity("Todolist.Models.Task", b =>
@@ -124,7 +124,7 @@ namespace Todolist.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Tasks");
+                    b.ToTable("Tasks", (string)null);
                 });
 
             modelBuilder.Entity("Todolist.Models.TaskPriority", b =>
@@ -148,7 +148,7 @@ namespace Todolist.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TaskPriority");
+                    b.ToTable("TaskPriority", (string)null);
 
                     b.HasData(
                         new

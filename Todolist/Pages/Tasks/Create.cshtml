@@ -1,5 +1,5 @@
 ﻿@page
-@using Todolist.Models;
+@using Todolist.Models.ViewModels;
 @model Todolist.Pages.Tasks.CreateModel
 
 @{
@@ -15,22 +15,32 @@
     <div class="col-md-4">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
+            <div class="form-group" hidden="hidden" >
+                <label asp-for="TaskCreate.UserId" class="control-label"></label>
+                <input asp-for="TaskCreate.UserId" class="form-control" value="@Model.UserId" />
+                <span asp-validation-for="TaskCreate.UserId" class="text-danger"></span>
+            </div>
             <div class="form-group">
-                <label asp-for="Task.Name" class="control-label"></label>
-                <input asp-for="Task.Name" class="form-control" />
-                <span asp-validation-for="Task.Name" class="text-danger"></span>
+                <label asp-for="TaskCreate.Name" class="control-label"></label>
+                <input asp-for="TaskCreate.Name" class="form-control" data-val-required="Name is required" />
+                <span asp-validation-for="TaskCreate.Name" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="Task.TaskPriorityId" class="control-label"></label>
-                <select asp-for="Task.TaskPriorityId" asp-items="@Model.TaskPrioritySL" class="form-control">
+                <label asp-for="TaskCreate.TaskPriorityId" class="control-label"></label>
+                <select asp-for="TaskCreate.TaskPriorityId" asp-items="Model.TaskPrioritySL" class="form-control" data-val-required="Task priority is required">
                     <option value="">-- Select Priority --</option>
                 </select>
+                <span asp-validation-for="TaskCreate.TaskPriorityId" class="text-danger"></span>
             </div>
-            @*<div class="form-group">
-                <label asp-for="Task.TaskParent" class="control-label">Parent task</label>
-                <select asp-for="Task.TaskParent" asp-items="Model.Tasks" class="form-control"></select>
-            </div>*@
+            <div class="form-group">
+                <label asp-for="TaskCreate.TaskParentId" class="control-label">Parent task</label>
+                <select asp-for="TaskCreate.TaskParentId" asp-items="Model.TaskSL" class="form-control">
+                    <option value="">-- No parent --</option>
+                </select>
+                <span asp-validation-for="TaskCreate.TaskParentId" class="text-danger"></span>
+            </div>
 @*            <div class="form-group">
                 <label asp-for="Task.DateCreate" class="control-label"></label>
                 <input asp-for="Task.DateCreate" class="form-control" readonly="true" />
@@ -42,9 +52,9 @@
                 <span asp-validation-for="Task.DateDone" class="text-danger"></span>
             </div>*@
             <div class="form-group">
-                <label asp-for="Task.DateDeadline" class="control-label">Deadline</label>
-                <input asp-for="Task.DateDeadline" class="form-control" />
-                <span asp-validation-for="Task.DateDeadline" class="text-danger"></span>
+                <label asp-for="TaskCreate.DateDeadline" class="control-label">Deadline</label>
+                <input asp-for="TaskCreate.DateDeadline" class="form-control" />
+                <span asp-validation-for="TaskCreate.DateDeadline" class="text-danger"></span>
             </div>
             @*<div class="form-group form-check">
                 <label class="form-check-label">
