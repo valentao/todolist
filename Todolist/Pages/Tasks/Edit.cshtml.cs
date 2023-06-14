@@ -49,9 +49,9 @@ namespace Todolist.Pages.Tasks
         /// Select tasks with no TaskParentId - only one level of nesting
         /// </summary>
         /// <param name="selectedTask"></param>
-        public void TaskDropDownList(object? selectedTask = null)
+        public void TaskDropDownList(int? id, object? selectedTask = null)
         {
-            TaskSL = new SelectList(_context.Tasks.Where(t => t.TaskParentId == null),
+            TaskSL = new SelectList(_context.Tasks.Where(t => t.TaskParentId == null && t.Id != id),
                 nameof(TaskPriority.Id),
                 nameof(TaskPriority.Name),
                 selectedTask);
@@ -68,7 +68,7 @@ namespace Todolist.Pages.Tasks
             }
 
             TaskPriorityDropDownList();
-            TaskDropDownList();
+            TaskDropDownList(id);
 
             var task = await _context.Tasks.FirstOrDefaultAsync(m => m.Id == id);
             if (task == null)
@@ -96,12 +96,12 @@ namespace Todolist.Pages.Tasks
 
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(int id)
         {
             if (!ModelState.IsValid)
             {
                 TaskPriorityDropDownList();
-                TaskDropDownList();
+                TaskDropDownList(id);
                 return Page();
             }
 
