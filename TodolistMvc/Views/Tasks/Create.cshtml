@@ -1,0 +1,65 @@
+﻿@model TodolistMvc.Models.TaskNew
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Task</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TaskPriorityId" class="control-label"></label>
+                <select asp-for="TaskPriorityId" class ="form-control" asp-items="ViewBag.TaskPriorityId">
+                    <option value="">-- Select Priority --</option>
+                </select>
+            </div>
+@*            <div class="form-group">
+                <label asp-for="DateCreate" class="control-label"></label>
+                <input asp-for="DateCreate" class="form-control" />
+                <span asp-validation-for="DateCreate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateDone" class="control-label"></label>
+                <input asp-for="DateDone" class="form-control" />
+                <span asp-validation-for="DateDone" class="text-danger"></span>
+            </div>*@
+            <div class="form-group">
+                <label asp-for="DateDeadline" class="control-label"></label>
+                <input asp-for="DateDeadline" class="form-control" />
+                <span asp-validation-for="DateDeadline" class="text-danger"></span>
+            </div>
+@*            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsDone" /> @Html.DisplayNameFor(model => model.IsDone)
+                </label>
+            </div>*@
+            <div class="form-group">
+                <label asp-for="TaskParentId" class="control-label"></label>
+                <select asp-for="TaskParentId" class ="form-control" asp-items="ViewBag.TaskParentId">
+                    <option value="">-- No parent --</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
