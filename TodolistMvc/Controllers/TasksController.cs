@@ -21,19 +21,21 @@ namespace TodolistMvc.Controllers
         // GET: Tasks
         public async Task<IActionResult> Index(int? taskPriorityId, string searchString)
         {
-            var mvcTaskContext = await _context.Task.Include(t => t.TaskParent).Include(t => t.TaskPriority).ToListAsync();
+            var mvcTaskContext = _context.Task.Include(t => t.TaskParent).Include(t => t.TaskPriority);
 
             if (taskPriorityId != null)
             {
-                mvcTaskContext = mvcTaskContext.Where(t => t.TaskPriorityId == taskPriorityId).ToList();
+                mvcTaskContext.Where(t => t.TaskPriorityId == taskPriorityId);
             }
 
             if (!String.IsNullOrEmpty(searchString))
             {
-                mvcTaskContext = mvcTaskContext.Where(t => t.Name.Contains(searchString)).ToList();
+                mvcTaskContext.Where(t => t.Name.Contains(searchString));
             }
 
             mvcTaskContext.OrderBy(t => t.DateDeadline != null ? t.DateDeadline : DateTime.MaxValue).ThenBy(t => t.TaskPriorityId);
+
+            await mvcTaskContext.ToListAsync();
 
             //var mvcTaskContext = _context.Task.Include(t => t.TaskParent).Include(t => t.TaskPriority)
             //    .OrderBy(t => t.DateDeadline != null ? t.DateDeadline : DateTime.MaxValue)
