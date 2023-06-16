@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TodolistMvc.Models
 {
@@ -6,6 +8,7 @@ namespace TodolistMvc.Models
     {
         public int Id { get; set; }
 
+        [Column(TypeName = "nvarchar(100)")]
         public string Name { get; set; } = null!;
 
         [Display(Name = "Task priority")]
@@ -37,6 +40,7 @@ namespace TodolistMvc.Models
     {
         public int Id { get; set; }
 
+        [Column(TypeName = "nvarchar(100)")]
         public string Name { get; set; } = null!;
 
         [Display(Name = "Task priority")]
@@ -68,6 +72,7 @@ namespace TodolistMvc.Models
     {
         public int Id { get; set; }
 
+        [Column(TypeName = "nvarchar(100)")]
         public string Name { get; set; } = null!;
 
         [Display(Name = "Task priority")]
