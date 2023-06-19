@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -12,10 +14,14 @@ namespace TodolistMvc.Controllers
     public class TasksController : Controller
     {
         private readonly TaskContext _context;
+        private IValidator<Models.TaskNew> _newValidator;
+        private IValidator<Models.TaskEdit> _editValidator;
 
-        public TasksController(TaskContext context)
+        public TasksController(TaskContext context, IValidator<Models.TaskNew> newValidator, IValidator<TaskEdit> editValidator)
         {
             _context = context;
+            _newValidator = newValidator;
+            _editValidator = editValidator;
         }
 
         // GET: Tasks
@@ -83,7 +89,9 @@ namespace TodolistMvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,TaskPriorityId,DateDeadline,TaskParentId")] Models.TaskNew taskNew)
         {
-            if (ModelState.IsValid)
+            ValidationResult result = await _newValidator.ValidateAsync(taskNew);
+
+            if (result.IsValid)
             {
                 // Map from TaskNew model to Task model/entity for save to db
                 var task = new Models.Task()
@@ -99,6 +107,13 @@ namespace TodolistMvc.Controllers
                 _context.Add(task);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+                }
             }
             ViewData["TaskParentId"] = new SelectList(_context.Set<Models.Task>().Where(t => t.TaskParentId == null), "Id", "Name", taskNew.TaskParentId);
             ViewData["TaskPriorityId"] = new SelectList(_context.Set<TaskPriority>(), "Id", "Name", taskNew.TaskPriorityId);
@@ -147,7 +162,9 @@ namespace TodolistMvc.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            ValidationResult result = await _editValidator.ValidateAsync(taskEdit);
+
+            if (result.IsValid)
             {
                 var task = await _context.Task.FindAsync(id);
                 // Map from TaskEdit model to Task model/entity for save to db
@@ -178,6 +195,13 @@ namespace TodolistMvc.Controllers
                 }
                 
                 return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+                }
             }
             ViewData["TaskParentId"] = new SelectList(_context.Set<Models.Task>().Where(t => t.TaskParentId == null && t.Id != id), "Id", "Name", taskEdit.TaskParentId);
             ViewData["TaskPriorityId"] = new SelectList(_context.Set<TaskPriority>(), "Id", "Name", taskEdit.TaskPriorityId);
