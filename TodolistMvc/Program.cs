@@ -2,6 +2,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TodolistMvc.Areas.Identity.Data;
 using Microsoft.Extensions.DependencyInjection;
+using FluentValidation;
+using System;
+using TodolistMvc.Models.Validators;
+
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("TodolistMvc") ?? throw new InvalidOperationException("Connection string 'TodolistMvc' not found.");
@@ -10,6 +14,10 @@ builder.Services.AddDbContext<AuthContext>(options => options.UseSqlServer(conne
 builder.Services.AddDbContext<TaskContext>(options => options.UseSqlServer(connectionString));
 
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false).AddEntityFrameworkStores<AuthContext>();
+
+// Validators
+builder.Services.AddScoped<IValidator<TodolistMvc.Models.TaskNew>, TaskNewValidator>();
+builder.Services.AddScoped<IValidator<TodolistMvc.Models.TaskEdit>, TaskEditValidator>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
