@@ -1,23 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TodolistMvc.Models;
+using TodolistMvc.Models.Tasks;
 
 namespace TodolistMvc.Controllers
 {
     public class TasksController : Controller
     {
         private readonly TaskContext _context;
-        private IValidator<Models.TaskNew> _newValidator;
-        private IValidator<Models.TaskEdit> _editValidator;
+        private IValidator<TaskNewDTO> _newValidator;
+        private IValidator<TaskEditDTO> _editValidator;
 
-        public TasksController(TaskContext context, IValidator<Models.TaskNew> newValidator, IValidator<TaskEdit> editValidator)
+        public TasksController(TaskContext context, IValidator<TaskNewDTO> newValidator, IValidator<TaskEditDTO> editValidator)
         {
             _context = context;
             _newValidator = newValidator;
@@ -41,7 +41,21 @@ namespace TodolistMvc.Controllers
 
             mvcTaskContext.OrderBy(t => t.DateDeadline != null ? t.DateDeadline : DateTime.MaxValue).ThenBy(t => t.TaskPriorityId);
 
-            await mvcTaskContext.ToListAsync();
+            var tasks = await mvcTaskContext.Select(t =>
+                new TaskDTO()
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                    TaskPriorityId = t.TaskPriorityId,
+                    TaskPriority = t.TaskPriority,
+                    DateCreate = t.DateCreate,
+                    DateDeadline = t.DateDeadline,
+                    DateDone = t.DateDone,
+                    IsDone = t.IsDone,
+                    TaskParentId = t.TaskParentId,
+                    TaskParent = t.TaskParent
+                }
+            ).ToListAsync();
 
             //var mvcTaskContext = _context.Task.Include(t => t.TaskParent).Include(t => t.TaskPriority)
             //    .OrderBy(t => t.DateDeadline != null ? t.DateDeadline : DateTime.MaxValue)
@@ -51,7 +65,7 @@ namespace TodolistMvc.Controllers
             //ViewData["TaskPriorityIdFilter"] = taskPriorityId;
             //ViewData["TaskNameFilter"] = searchString;
 
-            return View(mvcTaskContext);
+            return View(tasks);
         }
 
         // GET: Tasks/Details/5
@@ -64,8 +78,20 @@ namespace TodolistMvc.Controllers
 
             var task = await _context.Task
                 .Include(t => t.TaskParent)
-                .Include(t => t.TaskPriority)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .Include(t => t.TaskPriority).Select(t =>
+                    new TaskDetailDTO()
+                    {
+                        Id = t.Id,
+                        Name = t.Name,
+                        TaskPriorityId = t.TaskPriorityId,
+                        TaskPriority = t.TaskPriority,
+                        DateCreate = t.DateCreate,
+                        DateDeadline = t.DateDeadline,
+                        DateDone = t.DateDone,
+                        IsDone = t.IsDone,
+                        TaskParentId = t.TaskParentId,
+                        TaskParent = t.TaskParent
+                    }).FirstOrDefaultAsync(t => t.Id == id);
             if (task == null)
             {
                 return NotFound();
@@ -79,7 +105,7 @@ namespace TodolistMvc.Controllers
         {
             ViewData["TaskParentId"] = new SelectList(_context.Set<Models.Task>().Where(t=> t.TaskParentId == null), "Id", "Name");
             ViewData["TaskPriorityId"] = new SelectList(_context.Set<TaskPriority>(), "Id", "Name");
-            return View(new TaskNew());
+            return View(new TaskNewDTO());
         }
 
         // POST: Tasks/Create
@@ -87,7 +113,7 @@ namespace TodolistMvc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,TaskPriorityId,DateDeadline,TaskParentId")] Models.TaskNew taskNew)
+        public async Task<IActionResult> Create([Bind("Id,Name,TaskPriorityId,DateDeadline,TaskParentId")] TaskNewDTO taskNew)
         {
             ValidationResult result = await _newValidator.ValidateAsync(taskNew);
 
@@ -96,7 +122,6 @@ namespace TodolistMvc.Controllers
                 // Map from TaskNew model to Task model/entity for save to db
                 var task = new Models.Task()
                 {
-                    Id = taskNew.Id,
                     Name = taskNew.Name,
                     TaskPriorityId = taskNew.TaskPriorityId,
                     DateCreate = DateTime.Now,
@@ -135,7 +160,7 @@ namespace TodolistMvc.Controllers
             }
 
             // Map from Task model/entity to TaskEdit model
-            var taskEdit = new TaskEdit()
+            var taskEdit = new TaskEditDTO()
             {
                 Id = task.Id,
                 Name = task.Name,
@@ -155,7 +180,7 @@ namespace TodolistMvc.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         //public async Task<IActionResult> Edit(int id, [Bind("Id,Name,TaskPriorityId,DateCreate,DateDone,DateDeadline,IsDone,TaskParentId")] Models.Task task)
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,TaskPriorityId,DateDeadline,TaskParentId")] Models.TaskEdit taskEdit)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,TaskPriorityId,DateDeadline,TaskParentId")] TaskEditDTO taskEdit)
         {
             if (id != taskEdit.Id)
             {
@@ -286,15 +311,67 @@ namespace TodolistMvc.Controllers
         [HttpPost, ActionName("Done")]
         public async Task<IActionResult> Done(int id)
         {
-            _context.Task.Where(t => t.Id == id || t.TaskParentId == id).ToList().ForEach(x =>
+            var tasksEditDone = await _context.Task.Where(t => t.Id == id || t.TaskParentId == id).Select (t => 
+                new TaskEditDoneDTO()
+                {
+                    Id = t.Id,
+                    DateDone = t.DateDone,
+                    IsDone = t.IsDone
+                }).ToListAsync();
+
+            tasksEditDone.ForEach(t =>
             {
-                x.IsDone = true;
-                x.DateDone = DateTime.Now;
+                t.IsDone = true;
+                t.DateDone = DateTime.Now;
             });
+
+            foreach(var taskEditDone in tasksEditDone)
+            {
+                var task = await _context.Task.FindAsync(taskEditDone.Id);
+
+                if (task != null)
+                {
+                    task.DateDone = taskEditDone.DateDone;
+                    task.IsDone = taskEditDone.IsDone;
+                    try
+                    {
+                        _context.Update(task);
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        if (!TaskExists(task.Id))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
+                }
+            }
 
             await _context.SaveChangesAsync();
 
-            return View("Index", await _context.Task.Include(t => t.TaskParent).Include(t => t.TaskPriority).ToListAsync());
+            var tasks = await _context.Task.Include(t => t.TaskParent).Include(t => t.TaskPriority).Select(t =>
+                new TaskDTO()
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                    TaskPriorityId = t.TaskPriorityId,
+                    TaskPriority = t.TaskPriority,
+                    DateCreate = t.DateCreate,
+                    DateDeadline = t.DateDeadline,
+                    DateDone = t.DateDone,
+                    IsDone = t.IsDone,
+                    TaskParentId = t.TaskParentId,
+                    TaskParent = t.TaskParent
+                }
+            ).ToListAsync();
+
+            ViewData["TaskPriorityId"] = new SelectList(_context.Set<TaskPriority>(), "Id", "Name");
+
+            return View("Index", tasks);
         }
     }
 }

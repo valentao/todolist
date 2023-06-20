@@ -16,8 +16,8 @@ builder.Services.AddDbContext<TaskContext>(options => options.UseSqlServer(conne
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false).AddEntityFrameworkStores<AuthContext>();
 
 // Validators
-builder.Services.AddScoped<IValidator<TodolistMvc.Models.TaskNew>, TaskNewValidator>();
-builder.Services.AddScoped<IValidator<TodolistMvc.Models.TaskEdit>, TaskEditValidator>();
+builder.Services.AddScoped<IValidator<TodolistMvc.Models.Tasks.TaskNewDTO>, TaskNewValidator>();
+builder.Services.AddScoped<IValidator<TodolistMvc.Models.Tasks.TaskEditDTO>, TaskEditValidator>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

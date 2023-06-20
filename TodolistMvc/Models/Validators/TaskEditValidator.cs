@@ -1,8 +1,9 @@
 ﻿using FluentValidation;
+using TodolistMvc.Models.Tasks;
 
 namespace TodolistMvc.Models.Validators
 {
-    public class TaskEditValidator : AbstractValidator<TaskEdit>
+    public class TaskEditValidator : AbstractValidator<TaskEditDTO>
     {
         public TaskEditValidator()
         {
