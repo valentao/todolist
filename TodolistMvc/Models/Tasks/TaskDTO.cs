@@ -1,11 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
-namespace TodolistMvc.Models
+namespace TodolistMvc.Models.Tasks
 {
-    public class Task
+    public class TaskDTO
     {
+
         public int Id { get; set; }
 
         [Column(TypeName = "nvarchar(100)")]
@@ -13,7 +14,7 @@ namespace TodolistMvc.Models
 
         [Display(Name = "Task priority")]
         public int TaskPriorityId { get; set; }
-        
+
         [Display(Name = "Task priority")]
         public TaskPriority TaskPriority { get; set; } = null!;
 
@@ -31,7 +32,7 @@ namespace TodolistMvc.Models
 
         [Display(Name = "Parent task")]
         public int? TaskParentId { get; set; }
-        
+
         [Display(Name = "Parent task")]
         public Task? TaskParent { get; set; }
     }
